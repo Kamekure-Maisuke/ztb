@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts"
+  },
+  "imports": {
+    "@atproto/api": "npm:@atproto/api@^0.13.35",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
+    "fast-xml-parser": "npm:fast-xml-parser@^4.5.1"
+  }
+}
