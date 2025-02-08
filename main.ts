@@ -21,6 +21,7 @@ type RSSResponse = {
 const CONFIG = {
   BLUESKY_SERVICE: "https://bsky.social",
   ZENN_FEED_URL: "https://zenn.dev/feed",
+  CRON_SCHEDULE: "0 23 * * *",
 } as const;
 
 const { AtpAgent, RichText } = AtprotoAPI;
@@ -64,8 +65,8 @@ async function createPost(agent: AtprotoAPI.AtpAgent, text: string) {
   });
 }
 
-// 毎日8時に投稿
-Deno.cron("トレンド投稿", "0 23 * * *", async () => {
+// 投稿(毎日8時)
+Deno.cron("post zenn trends", "0 23 * * *", async () => {
   try {
     const agent = await initAgent();
     const trends = await fetchZennTrends();
