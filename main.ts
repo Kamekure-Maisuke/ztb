@@ -66,7 +66,7 @@ async function createPost(agent: AtprotoAPI.AtpAgent, text: string) {
 }
 
 // 投稿(毎日8時)
-Deno.cron("post zenn trends", "0 23 * * *", async () => {
+Deno.cron("post zenn trends", CONFIG.CRON_SCHEDULE, async () => {
   try {
     const agent = await initAgent();
     const trends = await fetchZennTrends();
