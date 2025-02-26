@@ -70,11 +70,12 @@ Deno.cron("post zenn trends", CONFIG.CRON_SCHEDULE, async () => {
   try {
     const agent = await initAgent();
     const trends = await fetchZennTrends();
-    const firstTrends = trends.flatMap((trend) => [trend.title, trend.link])
-      .slice(
-        0,
-        6,
-      );
+    const firstTrends = trends.flatMap((trend) => {
+      const title = trend.title.length > 15
+        ? trend.title.substring(0, 15) + "..."
+        : trend.title;
+      return [title, trend.link];
+    }).slice(0, 6);
 
     const template = "今日のZennトレンド\n\n";
     const text = template + firstTrends.join("\n");
