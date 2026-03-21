@@ -21,7 +21,6 @@ type RSSResponse = {
 const CONFIG = {
   BLUESKY_SERVICE: "https://bsky.social",
   ZENN_FEED_URL: "https://zenn.dev/feed",
-  CRON_SCHEDULE: "0 23 * * *",
 } as const;
 
 const { AtpAgent, RichText } = AtprotoAPI;
@@ -65,23 +64,21 @@ async function createPost(agent: AtprotoAPI.AtpAgent, text: string) {
   });
 }
 
-// 投稿(毎日8時)
-Deno.cron("post zenn trends", CONFIG.CRON_SCHEDULE, async () => {
-  try {
-    const agent = await initAgent();
-    const trends = await fetchZennTrends();
-    const firstTrends = trends.flatMap((trend) => {
-      const title = trend.title.length > 15
-        ? trend.title.substring(0, 15) + "..."
-        : trend.title;
-      return [title, trend.link];
-    }).slice(0, 6);
+// 投稿
+try {
+  const agent = await initAgent();
+  const trends = await fetchZennTrends();
+  const firstTrends = trends.flatMap((trend) => {
+    const title = trend.title.length > 15
+      ? trend.title.substring(0, 15) + "..."
+      : trend.title;
+    return [title, trend.link];
+  }).slice(0, 6);
 
-    const template = "今日のZennトレンド\n\n";
-    const text = template + firstTrends.join("\n");
-    await createPost(agent, text);
-  } catch (e) {
-    console.error(`投稿エラー: ${e}`);
-    Deno.exit(1);
-  }
-});
+  const template = "今日のZennトレンド\n\n";
+  const text = template + firstTrends.join("\n");
+  await createPost(agent, text);
+} catch (e) {
+  console.error(`投稿エラー: ${e}`);
+  Deno.exit(1);
+}
