@@ -19,6 +19,15 @@ jobs:
       - name: Install deno
         uses: denoland/setup-deno@v2
 
+      - name: Cache deno dependencies
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/deno
+          key: deno-${{ hashFiles('deno.lock') }}
+
+      - name: Install dependencies
+        run: deno ci
+
       - name: Run
         run: deno run --allow-read --allow-env --allow-net main.ts
         env:
